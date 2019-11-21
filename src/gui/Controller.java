@@ -9,9 +9,11 @@ import javafx.fxml.FXML;
 
 
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class Controller {
@@ -23,6 +25,12 @@ public class Controller {
     private Button resizeButton;
     @FXML
     private ImageView imageView;
+    @FXML
+    private TextField ipTextField;
+    @FXML
+    private Pane connectContainer;
+
+    private String DEFAULT_IP = "127.0.0.1";
 
     private ImageSendServer server;
     private static double xOffset = 0;
@@ -39,6 +47,17 @@ public class Controller {
         this.params = InputParams.getInstance();
 
     }
+
+    @FXML
+    public void onConnect(){
+        String ip = ipTextField.getText().length() > 0 ? ipTextField.getText() : DEFAULT_IP;
+        System.out.println(ip);
+        screenCapture = new ScreenCapture(imageView, ip);
+        screenCapture.setDaemon(true);
+        screenCapture.start();
+        connectContainer.setVisible(false);
+    }
+
 
     public void setPrimaryStage(Stage s) {
         this.primaryStage = s;
@@ -91,21 +110,28 @@ public class Controller {
                 isHidden = !isHidden;
             }
         });
-        screenCapture = new ScreenCapture(imageView);
+
         server = new ImageSendServer(imageView,8965);
         try {
+            server.setDaemon(true);
             server.start();
         } catch (Exception e) {
 
         }
         closeButton.setOpacity(0);
         resizeButton.setOpacity(0);
-        screenCapture.setDaemon(true);
-        screenCapture.start();
     }
 
     public void clearThreads(){
-        screenCapture.stopCapturing();
+        try {
+            if (screenCapture !=  null)
+                screenCapture.stopCapturing();
+
+            server.stopServer();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

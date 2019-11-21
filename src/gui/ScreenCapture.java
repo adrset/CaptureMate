@@ -20,6 +20,7 @@ public class ScreenCapture extends Thread {
     private volatile boolean stop = false;
     private volatile boolean bigSize = true;
     ImageSendClient client;
+    private String ip;
 
     public synchronized void stopCapturing(){
         this.stop = true;
@@ -49,8 +50,9 @@ public class ScreenCapture extends Thread {
         }
     }
 
-    public ScreenCapture(ImageView imageView){
+    public ScreenCapture(ImageView imageView, String ip){
         try {
+            this.ip = ip;
             this.imageView = imageView;
             this.params = InputParams.getInstance();
             this.robot = new Robot();
@@ -84,7 +86,7 @@ public class ScreenCapture extends Thread {
             System.out.println("what" + e.getMessage());
             e.printStackTrace();
             try {
-                client.startConnection("localhost", 8965);
+                client.startConnection(ip, 8965);
             } catch(Exception ee) {
             }
         }

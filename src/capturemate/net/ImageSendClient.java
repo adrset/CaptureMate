@@ -14,6 +14,11 @@ public class ImageSendClient {
         private PrintWriter out;
         private BufferedReader in;
 
+        public void closeSocket() throws Exception{
+            clientSocket.close();
+        }
+
+
         public void startConnection(String ip, int port) throws Exception {
             clientSocket = new Socket(ip, port);
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -23,13 +28,16 @@ public class ImageSendClient {
         public String sendImage(BufferedImage imgstream) throws Exception {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(imgstream, "jpg", byteArrayOutputStream);
+            try {
+                OutputStream outputStream = clientSocket.getOutputStream();
+                byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+                outputStream.write(size);
+                outputStream.write(byteArrayOutputStream.toByteArray());
+                outputStream.flush();
+            } catch (Exception e){
 
-            OutputStream outputStream = clientSocket.getOutputStream();
-            byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
-            outputStream.write(size);
-            outputStream.write(byteArrayOutputStream.toByteArray());
-            outputStream.flush();
-            System.out.println("Flushed: " + System.currentTimeMillis());
+            }
+
             //String resp = in.readLine();
             return "";
         }

@@ -16,7 +16,8 @@ public class ImageSendServer extends Thread{
     private ImageView imageView;
     private int port;
     private ServerSocket serverSocket;
-
+    private volatile boolean stop = false;
+    private EchoClientHandler ev;
     public ImageSendServer(ImageView view, int port) {
         this.imageView = view;
         this.port = port;
@@ -26,16 +27,23 @@ public class ImageSendServer extends Thread{
     public void run() {
         try {
             serverSocket = new ServerSocket(port);
-            while (true)
-                new EchoClientHandler(serverSocket.accept(), imageView).start();
+            while (!stop){
+                ev = new EchoClientHandler(serverSocket.accept(), imageView);
+                ev.setDaemon(true);
+                ev.start();
+            }
         } catch(Exception e) {
 
         }
 
     }
 
-    public void stopServer() throws Exception {
-        serverSocket.close();
+    public synchronized void stopServer() throws Exception {
+        if(serverSocket != null){
+            serverSocket.close();
+            stop = true;
+            ev.clientSocket.close();
+        }
     }
 
     private static class EchoClientHandler extends Thread {
@@ -51,8 +59,6 @@ public class ImageSendServer extends Thread{
         public void run() {
             try {
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
-//                in = new BufferedReader(
-//                        new InputStreamReader(clientSocket.getInputStream()));
                 String inputLine;
                 int i =0;
                 while (true) {

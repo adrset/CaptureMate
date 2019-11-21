@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import gui.AnchorPaneExtended?>
 <?import javafx.scene.control.Button?>
-<BorderPane fx:id="anchorPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="gui.Controller">
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+
+<BorderPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
     <children>
-        <ImageView fx:id="imageView"/>
-        <HBox fx:id="buttonContainer">
-            <Button alignment="BOTTOM_RIGHT" minWidth="50" minHeight="25" fx:id="closeButton" text="close" onAction="#onCloseButton"/>
-            <Button alignment="BOTTOM_RIGHT" minWidth="50" minHeight="25" fx:id="resizeButton" text="+/-" onAction="#onResizeButton"/>
-        </HBox>
+        <ImageView fx:id="imageView" />
     </children>
+   <top>
+       <HBox fx:id="buttonContainer">
+           <Button fx:id="closeButton" alignment="BOTTOM_RIGHT" minHeight="25" minWidth="50" onAction="#onCloseButton" text="close" />
+           <Button fx:id="resizeButton" alignment="BOTTOM_RIGHT" minHeight="25" minWidth="50" onAction="#onResizeButton" text="+/-" />
+       </HBox>
+   </top>
+    <center>
+        <HBox fx:id="connectContainer">
+            <TextField fx:id="ipTextField" />
+            <Button fx:id="connectButton" alignment="BOTTOM_RIGHT" minHeight="25" minWidth="50" onAction="#onConnect" text="Connect" />
+        </HBox>
+    </center>
+
 </BorderPane>
