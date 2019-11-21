@@ -1,17 +1,14 @@
 package gui;
 
-import cgp.InputParams;
+import capturemate.InputParams;
+import capturemate.net.ImageSendClient;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 public class ScreenCapture extends Thread {
     Robot robot;
@@ -19,6 +16,7 @@ public class ScreenCapture extends Thread {
     private ImageView imageView;
     private volatile boolean stop = false;
     private volatile boolean bigSize = true;
+    ImageSendClient client;
 
     public synchronized void stopCapturing(){
         this.stop = true;
@@ -33,6 +31,11 @@ public class ScreenCapture extends Thread {
 
     @Override
     public void run() {
+        try {
+            client.startConnection("localhost", 8965);
+        } catch (Exception e) {
+
+        }
         while (!this.stop){
             screenCapture();
             try {
@@ -48,12 +51,13 @@ public class ScreenCapture extends Thread {
             this.imageView = imageView;
             this.params = InputParams.getInstance();
             this.robot = new Robot();
+            client = new ImageSendClient();
         } catch(Exception e) {
             //
         }
     }
 
-    public void screenCapture() {
+    public int screenCapture() {
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         Rectangle rectangle = new Rectangle(dimension);
         BufferedImage screen = robot.createScreenCapture(rectangle);
@@ -70,9 +74,21 @@ public class ScreenCapture extends Thread {
                 screen.getHeight(), null);
         g.dispose();
         Image image = SwingFXUtils.toFXImage(resized, null);
+
         Platform.runLater(() -> {
             imageView.setImage(image);
         });
 
+        try {
+            String response = client.sendMessage("hello server");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            try {
+                client.startConnection("localhost", 8965);
+            } catch(Exception ee) {
+                System.out.println("retryy" + e.getMessage());
+            }
+        }
+        return 1;
     }
 }

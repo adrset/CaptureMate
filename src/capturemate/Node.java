@@ -1,6 +1,6 @@
-package cgp;
+package capturemate;
 
-import cgp.functions.Function;
+import capturemate.functions.Function;
 
 public class Node {
     Function strategy;

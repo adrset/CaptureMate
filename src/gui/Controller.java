@@ -1,28 +1,25 @@
 package gui;
 
-import cgp.InputParams;
+import capturemate.InputParams;
 import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
 
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-
-import javax.imageio.ImageIO;
 
 public class Controller {
     private boolean isHidden = false;
     Stage primaryStage;
     @FXML
     private Button closeButton;
+    @FXML
+    private Button resizeButton;
     @FXML
     private ImageView imageView;
 
@@ -74,6 +71,7 @@ public class Controller {
             public void handle(MouseEvent t) {
                 anchorPane.setStyle("-fx-effect: innershadow(gaussian, rgba( 221, 221, 0, 0.5 ), 2, 1.0, 0, 0);");
                 closeButton.setOpacity(1);
+                resizeButton.setOpacity(1);
 
             }
         });
@@ -81,6 +79,8 @@ public class Controller {
         anchorPane.setOnMouseExited(t -> {
             anchorPane.setStyle("-fx-effect: innershadow(gaussian, rgba( 221, 221, 0, 0 ), 2, 1.0, 0, 0);");
             closeButton.setOpacity(0);
+            resizeButton.setOpacity(0);
+
 
         });
         anchorPane.setOnKeyPressed(event -> {
@@ -91,6 +91,7 @@ public class Controller {
         });
         screenCapture = new ScreenCapture(imageView);
         closeButton.setOpacity(0);
+        resizeButton.setOpacity(0);
         screenCapture.setDaemon(true);
         screenCapture.start();
     }

@@ -1,7 +1,7 @@
 package gui;
 
-import cgp.InputParams;
-import cgp.Node;
+import capturemate.InputParams;
+import capturemate.Node;
 
 public class SimulationModel {
 

@@ -1,4 +1,4 @@
-package cgp;
+package capturemate;
 
 public class InputParams {
     static InputParams singleton;

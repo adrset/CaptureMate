@@ -1,4 +1,4 @@
-package cgp.functions;
+package capturemate.functions;
 
 public class Multiply <T extends Number> implements Function <T>{
 

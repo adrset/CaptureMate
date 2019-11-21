@@ -1,4 +1,4 @@
-package cgp.functions;
+package capturemate.functions;
 
 public class Divide <T extends Number> implements Function <T>{
 

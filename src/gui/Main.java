@@ -1,13 +1,13 @@
 package gui;
 
-import cgp.InputParams;
-import cgp.functions.Function;
+import capturemate.InputParams;
+import capturemate.functions.Function;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import cgp.functions.Add;
+import capturemate.functions.Add;
 import javafx.stage.StageStyle;
 
 public class Main extends Application {
