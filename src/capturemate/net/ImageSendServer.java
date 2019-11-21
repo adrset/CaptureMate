@@ -1,5 +1,10 @@
 package capturemate.net;
 
+import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -7,15 +12,29 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
-public class ImageSendServer {
+public class ImageSendServer extends Thread{
+    private ImageView imageView;
+    private int port;
     private ServerSocket serverSocket;
-    public void start(int port) throws Exception {
-        serverSocket = new ServerSocket(port);
-        while (true)
-            new EchoClientHandler(serverSocket.accept()).start();
+
+    public ImageSendServer(ImageView view, int port) {
+        this.imageView = view;
+        this.port = port;
     }
 
-    public void stop() throws Exception {
+    @Override
+    public void run() {
+        try {
+            serverSocket = new ServerSocket(port);
+            while (true)
+                new EchoClientHandler(serverSocket.accept(), imageView).start();
+        } catch(Exception e) {
+
+        }
+
+    }
+
+    public void stopServer() throws Exception {
         serverSocket.close();
     }
 
@@ -23,9 +42,10 @@ public class ImageSendServer {
         private Socket clientSocket;
         private PrintWriter out;
         private BufferedReader in;
-
-        public EchoClientHandler(Socket socket) {
+        private ImageView imageView;
+        public EchoClientHandler(Socket socket, ImageView view) {
             this.clientSocket = socket;
+            this.imageView = view;
         }
 
         public void run() {
@@ -51,9 +71,12 @@ public class ImageSendServer {
                     if(image == null) {
                         break;
                     }
-                    ImageIO.write(image, "jpg", new File("output" + i++ + ".jpg"));
+                    Image imageFX = SwingFXUtils.toFXImage(image, null);
 
-                    out.println("GOTCHA");
+                    Platform.runLater(() -> {
+                        this.imageView.setImage(imageFX);
+                    });
+
 
                 }
 
@@ -62,16 +85,6 @@ public class ImageSendServer {
             } catch(Exception e) {
                 System.out.println("server" + e.getMessage());
             }
-        }
-    }
-
-    public static void main(String[] args) {
-        ImageSendServer a = new ImageSendServer();
-        try {
-            a.start(8965);
-
-        } catch(Exception e) {
-
         }
     }
 

@@ -1,6 +1,7 @@
 package gui;
 
 import capturemate.InputParams;
+import capturemate.net.ImageSendServer;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,7 +24,7 @@ public class Controller {
     @FXML
     private ImageView imageView;
 
-
+    private ImageSendServer server;
     private static double xOffset = 0;
     private static double yOffset = 0;
     private InputParams params;
@@ -91,6 +92,12 @@ public class Controller {
             }
         });
         screenCapture = new ScreenCapture(imageView);
+        server = new ImageSendServer(imageView,8965);
+        try {
+            server.start();
+        } catch (Exception e) {
+
+        }
         closeButton.setOpacity(0);
         resizeButton.setOpacity(0);
         screenCapture.setDaemon(true);

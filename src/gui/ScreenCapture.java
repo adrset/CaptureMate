@@ -76,15 +76,9 @@ public class ScreenCapture extends Thread {
         g.drawImage(screen, 0, 0, width, height, 0, 0, screen.getWidth(),
                 screen.getHeight(), null);
         g.dispose();
-        Image image = SwingFXUtils.toFXImage(resized, null);
-
-        Platform.runLater(() -> {
-            imageView.setImage(image);
-        });
 
         try {
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            //ImageIO.write(resized, "jpg", byteArrayOutputStream);
             client.sendImage(resized);
         } catch (Exception e) {
             System.out.println("what" + e.getMessage());
