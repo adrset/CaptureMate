@@ -59,7 +59,7 @@ public class ScreenCapture extends Thread {
             this.robot = new Robot();
             client = new ImageSendClient();
         } catch(Exception e) {
-            //
+            e.printStackTrace();
         }
     }
 
@@ -89,7 +89,7 @@ public class ScreenCapture extends Thread {
             try {
                 client.startConnection(ip, 8965);
             } catch(Exception ee) {
-
+                e.printStackTrace();
             }
         }
         return 1;

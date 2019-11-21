@@ -33,7 +33,7 @@ public class ImageSendServer extends Thread{
                 ev.start();
             }
         } catch(Exception e) {
-
+            e.printStackTrace();
         }
 
     }
@@ -90,7 +90,7 @@ public class ImageSendServer extends Thread{
                 out.close();
                 clientSocket.close();
             } catch(Exception e) {
-                System.out.println("server" + e.getMessage());
+                e.printStackTrace();
             }
         }
     }

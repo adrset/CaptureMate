@@ -35,7 +35,7 @@ public class ImageSendClient {
                 outputStream.write(byteArrayOutputStream.toByteArray());
                 outputStream.flush();
             } catch (Exception e){
-
+                e.printStackTrace();
             }
 
             //String resp = in.readLine();
