@@ -37,7 +37,7 @@ public class Controller {
     private static double yOffset = 0;
     private InputParams params;
     private ScreenCapture screenCapture;
-
+    String ip = "127.0.0.1";
     @FXML
     private BorderPane anchorPane;
     KeyCombination cntrlZ = new KeyCodeCombination(KeyCode.O, KeyCodeCombination.CONTROL_ANY);
@@ -50,7 +50,7 @@ public class Controller {
 
     @FXML
     public void onConnect(){
-        String ip = ipTextField.getText().length() > 0 ? ipTextField.getText() : DEFAULT_IP;
+
         System.out.println(ip);
         screenCapture = new ScreenCapture(imageView, ip);
         screenCapture.setDaemon(true);
@@ -120,6 +120,9 @@ public class Controller {
         }
         closeButton.setOpacity(0);
         resizeButton.setOpacity(0);
+        ipTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            this.ip = newValue;
+        });
     }
 
     public void clearThreads(){
