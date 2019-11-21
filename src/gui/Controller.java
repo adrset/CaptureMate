@@ -28,6 +28,7 @@ public class Controller {
     private static double yOffset = 0;
     private InputParams params;
     private ScreenCapture screenCapture;
+
     @FXML
     private BorderPane anchorPane;
     KeyCombination cntrlZ = new KeyCodeCombination(KeyCode.O, KeyCodeCombination.CONTROL_ANY);

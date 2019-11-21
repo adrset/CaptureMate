@@ -7,8 +7,11 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 
 public class ScreenCapture extends Thread {
     Robot robot;
@@ -62,8 +65,8 @@ public class ScreenCapture extends Thread {
         Rectangle rectangle = new Rectangle(dimension);
         BufferedImage screen = robot.createScreenCapture(rectangle);
         float scaleFactor = params.getScaleFactors()[bigSize ? 0 : 1];
-        int height = (int) (params.getWidth()*scaleFactor);
-        int width = (int) (params.getHeight()*scaleFactor);
+        int height = (int) (params.getHeight()*scaleFactor);
+        int width = (int) (params.getWidth()*scaleFactor);
         BufferedImage resized = new BufferedImage(width, height, screen.getType());
         Graphics2D g = resized.createGraphics();
 
@@ -80,13 +83,15 @@ public class ScreenCapture extends Thread {
         });
 
         try {
-            String response = client.sendMessage("hello server");
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            //ImageIO.write(resized, "jpg", byteArrayOutputStream);
+            client.sendImage(resized);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("what" + e.getMessage());
+            e.printStackTrace();
             try {
                 client.startConnection("localhost", 8965);
             } catch(Exception ee) {
-                System.out.println("retryy" + e.getMessage());
             }
         }
         return 1;

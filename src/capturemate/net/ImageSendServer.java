@@ -1,10 +1,11 @@
 package capturemate.net;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 public class ImageSendServer {
     private ServerSocket serverSocket;
@@ -30,19 +31,32 @@ public class ImageSendServer {
         public void run() {
             try {
                 out = new PrintWriter(clientSocket.getOutputStream(), true);
-                in = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream()));
-
+//                in = new BufferedReader(
+//                        new InputStreamReader(clientSocket.getInputStream()));
                 String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    if (".".equals(inputLine)) {
-                        out.println("bye");
+                int i =0;
+                while (true) {
+                    InputStream inputStream = clientSocket.getInputStream();
+
+                    System.out.println("Reading: " + System.currentTimeMillis());
+
+                    byte[] sizeAr = new byte[4];
+                    inputStream.read(sizeAr);
+                    int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
+
+                    byte[] imageAr = new byte[size];
+                    inputStream.read(imageAr);
+
+                    BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageAr));
+                    if(image == null) {
                         break;
                     }
-                    out.println(inputLine);
+                    ImageIO.write(image, "jpg", new File("output" + i++ + ".jpg"));
+
+                    out.println("GOTCHA");
+
                 }
 
-                in.close();
                 out.close();
                 clientSocket.close();
             } catch(Exception e) {

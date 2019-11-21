@@ -20,10 +20,18 @@ public class ImageSendClient {
             in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         }
 
-        public String sendMessage(String msg) throws Exception {
-            out.println(msg);
-            String resp = in.readLine();
-            return resp;
+        public String sendImage(BufferedImage imgstream) throws Exception {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(imgstream, "jpg", byteArrayOutputStream);
+
+            OutputStream outputStream = clientSocket.getOutputStream();
+            byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+            outputStream.write(size);
+            outputStream.write(byteArrayOutputStream.toByteArray());
+            outputStream.flush();
+            System.out.println("Flushed: " + System.currentTimeMillis());
+            //String resp = in.readLine();
+            return "";
         }
 
         public void stopConnection() throws Exception{
