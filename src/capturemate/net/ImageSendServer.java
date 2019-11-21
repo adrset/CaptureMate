@@ -42,7 +42,8 @@ public class ImageSendServer extends Thread{
         if(serverSocket != null){
             serverSocket.close();
             stop = true;
-            ev.clientSocket.close();
+            if (ev.clientSocket != null)
+                ev.clientSocket.close();
         }
     }
 

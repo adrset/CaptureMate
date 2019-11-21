@@ -36,7 +36,7 @@ public class ScreenCapture extends Thread {
     @Override
     public void run() {
         try {
-            client.startConnection("localhost", 8965);
+            client.startConnection(ip, 8965);
         } catch (Exception e) {
 
         }
@@ -52,6 +52,7 @@ public class ScreenCapture extends Thread {
 
     public ScreenCapture(ImageView imageView, String ip){
         try {
+            System.out.println(ip);
             this.ip = ip;
             this.imageView = imageView;
             this.params = InputParams.getInstance();
@@ -88,6 +89,7 @@ public class ScreenCapture extends Thread {
             try {
                 client.startConnection(ip, 8965);
             } catch(Exception ee) {
+
             }
         }
         return 1;
