@@ -67,7 +67,6 @@ public class ImageSendServer extends Thread{
 
                     byte[] sizeAr = new byte[4];
 
-
                     inputStream.read(sizeAr);
 
                     int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
@@ -92,13 +91,10 @@ public class ImageSendServer extends Thread{
                     }
 
                     Image imageFX = SwingFXUtils.toFXImage(image, null);
-                    System.out.println(imageFX);
                     Platform.runLater(() -> {
                         this.imageView.setImage(imageFX);
                     });
-
                 }
-
 
             } catch(Exception e) {
                 e.printStackTrace();
