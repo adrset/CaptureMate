@@ -81,7 +81,6 @@ public class ScreenCapture extends Thread {
         g.dispose();
 
         try {
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             client.sendImage(resized);
         } catch (Exception e) {
             System.out.println("what" + e.getMessage());

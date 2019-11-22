@@ -32,6 +32,7 @@ public class ImageSendServer extends Thread{
                 ev.setDaemon(true);
                 ev.start();
             }
+            serverSocket.close();
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -40,7 +41,7 @@ public class ImageSendServer extends Thread{
 
     public synchronized void stopServer() throws Exception {
         if(serverSocket != null){
-            serverSocket.close();
+            //
             stop = true;
             if (ev.clientSocket != null)
                 ev.clientSocket.close();
@@ -59,36 +60,46 @@ public class ImageSendServer extends Thread{
 
         public void run() {
             try {
-                out = new PrintWriter(clientSocket.getOutputStream(), true);
-                String inputLine;
-                int i =0;
+
                 while (true) {
+
                     InputStream inputStream = clientSocket.getInputStream();
 
-                    System.out.println("Reading: " + System.currentTimeMillis());
-
                     byte[] sizeAr = new byte[4];
+
+
                     inputStream.read(sizeAr);
+
                     int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
 
-                    byte[] imageAr = new byte[size];
-                    inputStream.read(imageAr);
-
-                    BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageAr));
-                    if(image == null) {
-                        break;
+                    if (size < 0) {
+                        continue;
                     }
-                    Image imageFX = SwingFXUtils.toFXImage(image, null);
 
+                    byte[] byteArray = new byte[1024];
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    int total = 0;
+                    int readBytes = 0;
+
+                    while (total < size && (readBytes = inputStream.read(byteArray)) != -1) {
+                        bos.write(byteArray, 0, readBytes);
+                        total += readBytes;
+                    }
+
+                    BufferedImage image = ImageIO.read(new ByteArrayInputStream(bos.toByteArray()));
+                    if (image == null) {
+                        continue;
+                    }
+
+                    Image imageFX = SwingFXUtils.toFXImage(image, null);
+                    System.out.println(imageFX);
                     Platform.runLater(() -> {
                         this.imageView.setImage(imageFX);
                     });
 
-
                 }
 
-                out.close();
-                clientSocket.close();
+
             } catch(Exception e) {
                 e.printStackTrace();
             }
