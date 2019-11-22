@@ -60,7 +60,7 @@ public class ImageSendServer extends Thread{
 
         public void run() {
             try {
-                byte leftOver[];
+                ByteArrayOutputStream bosLeftOver = null;
                 while (true) {
 
                     InputStream inputStream = clientSocket.getInputStream();
@@ -76,12 +76,27 @@ public class ImageSendServer extends Thread{
 
                     byte[] byteArray = new byte[1];
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    if(bosLeftOver != null){
+                        // Watch out!!! Could contain more than one image if buffer size > image
+                        bos.write(bosLeftOver.toByteArray());
+                    }
                     int total = 0;
                     int readBytes = 0;
 
                     while (total < size && (readBytes = inputStream.read(byteArray)) != -1) {
-                        bos.write(byteArray, 0, readBytes);
                         total += readBytes;
+
+                        if(total > size) {
+                            bosLeftOver = new ByteArrayOutputStream();
+                            int overflow = total - size;
+                            bos.write(byteArray, 0, readBytes - overflow);
+                            bosLeftOver.write(byteArray, readBytes - overflow, overflow);
+
+                        } else {
+                            bosLeftOver = null;
+                            bos.write(byteArray, 0, readBytes);
+                        }
+
 
                     }
 
